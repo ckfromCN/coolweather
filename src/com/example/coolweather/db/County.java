@@ -5,6 +5,17 @@ public class County
 	private String countyName;
 	private String countyCode;
 	private int cityId;
+	private int id;
+
+	public int getId()
+	{
+		return id;
+	}
+
+	public void setId(int id)
+	{
+		this.id = id;
+	}
 
 	public String getCountyName()
 	{

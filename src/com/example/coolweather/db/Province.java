@@ -2,8 +2,20 @@ package com.example.coolweather.db;
 
 public class Province
 {
+
 	private String provinceName;
 	private String ProvinceCode;
+	private int id;
+
+	public int getId()
+	{
+		return id;
+	}
+
+	public void setId(int id)
+	{
+		this.id = id;
+	}
 
 	public String getProvinceName()
 	{

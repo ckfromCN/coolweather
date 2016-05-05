@@ -5,6 +5,17 @@ public class City
 	private String cityName;
 	private String cityCode;
 	private int provinceId;
+	private int id;
+
+	public int getId()
+	{
+		return id;
+	}
+
+	public void setId(int id)
+	{
+		this.id = id;
+	}
 
 	public String getCityName()
 	{
