@@ -5,7 +5,10 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
@@ -23,6 +26,7 @@ import com.example.coolweather.db.County;
 import com.example.coolweather.db.Province;
 import com.example.coolweather.util.HttpCallbackListener;
 import com.example.coolweather.util.HttpUtil;
+import com.example.coolweather.util.LogUtil;
 import com.example.coolweather.util.Utility;
 
 public class ChooseAreaActivity extends Activity
@@ -62,6 +66,15 @@ public class ChooseAreaActivity extends Activity
 		listView = (ListView) findViewById(R.id.list_view);
 		adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dataList);
 		listView.setAdapter(adapter);
+		SharedPreferences spf=PreferenceManager.getDefaultSharedPreferences(this);
+		boolean selectCity=spf.getBoolean("city_selected", false);
+		if (selectCity)
+		{
+			Intent intent=new Intent();
+			intent.setClass(this, WeatherActivity.class);
+			startActivity(intent);
+			finish();
+		}
 		listView.setOnItemClickListener(new OnItemClickListener()
 		{
 
@@ -76,6 +89,16 @@ public class ChooseAreaActivity extends Activity
 				{
 					selectedCity = cityList.get(position);
 					queryCounty();
+				}else if (currentLevel == LEVEL_COUNTY)
+				{
+					County county=countyList.get(position);
+					String countyCode=county.getCountyCode();
+					Intent intent=new Intent();
+					intent.putExtra("countyCode", countyCode);
+					intent.setClass(ChooseAreaActivity.this, WeatherActivity.class);
+
+					startActivity(intent);
+					finish();
 				}
 			}
 		});
