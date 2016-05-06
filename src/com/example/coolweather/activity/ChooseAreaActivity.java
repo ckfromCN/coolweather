@@ -26,7 +26,6 @@ import com.example.coolweather.db.County;
 import com.example.coolweather.db.Province;
 import com.example.coolweather.util.HttpCallbackListener;
 import com.example.coolweather.util.HttpUtil;
-import com.example.coolweather.util.LogUtil;
 import com.example.coolweather.util.Utility;
 
 public class ChooseAreaActivity extends Activity
@@ -42,7 +41,7 @@ public class ChooseAreaActivity extends Activity
 	private ArrayAdapter<String> adapter;
 	private CoolWeatherDB coolWeatherDB;
 
-	private List<String> dataList=new ArrayList<String>();
+	private List<String> dataList = new ArrayList<String>();
 	private List<Province> provinceList;
 	private List<City> cityList;
 	private List<County> countyList;
@@ -55,22 +54,27 @@ public class ChooseAreaActivity extends Activity
 	 */
 	private City selectedCity;
 
+	/**
+	 * 判断是否中WeatherActivity中跳转过来
+	 */
+	private boolean isFromWeatherActivity;
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.choose_area);
+		isFromWeatherActivity=getIntent().getBooleanExtra("from_weather_activity", false);
 		coolWeatherDB = CoolWeatherDB.getInstance(this);
 		titleText = (TextView) findViewById(R.id.title_text);
 		listView = (ListView) findViewById(R.id.list_view);
 		adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dataList);
 		listView.setAdapter(adapter);
-		SharedPreferences spf=PreferenceManager.getDefaultSharedPreferences(this);
-		boolean selectCity=spf.getBoolean("city_selected", false);
-		if (selectCity)
+		SharedPreferences spf = PreferenceManager.getDefaultSharedPreferences(this);
+		boolean selectCity = spf.getBoolean("city_selected", false);
+		if (selectCity&&!isFromWeatherActivity)
 		{
-			Intent intent=new Intent();
+			Intent intent = new Intent();
 			intent.setClass(this, WeatherActivity.class);
 			startActivity(intent);
 			finish();
@@ -89,11 +93,11 @@ public class ChooseAreaActivity extends Activity
 				{
 					selectedCity = cityList.get(position);
 					queryCounty();
-				}else if (currentLevel == LEVEL_COUNTY)
+				} else if (currentLevel == LEVEL_COUNTY)
 				{
-					County county=countyList.get(position);
-					String countyCode=county.getCountyCode();
-					Intent intent=new Intent();
+					County county = countyList.get(position);
+					String countyCode = county.getCountyCode();
+					Intent intent = new Intent();
 					intent.putExtra("countyCode", countyCode);
 					intent.setClass(ChooseAreaActivity.this, WeatherActivity.class);
 
@@ -229,10 +233,10 @@ public class ChooseAreaActivity extends Activity
 							{
 								queryCounty();
 							}
-							closeProgressDialog();//关闭对话框
+							closeProgressDialog();// 关闭对话框
 						}
 					});
-				} 
+				}
 			}
 
 			@Override
@@ -288,6 +292,11 @@ public class ChooseAreaActivity extends Activity
 			queryProvinces();
 		} else
 		{
+			if (isFromWeatherActivity)
+			{
+				Intent intent =new Intent(this, WeatherActivity.class);
+				startActivity(intent);
+			}
 			finish();
 		}
 	}
