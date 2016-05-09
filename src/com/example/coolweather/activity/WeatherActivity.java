@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -14,8 +15,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.coolweather.R;
+import com.example.coolweather.service.AutoUpdateService;
 import com.example.coolweather.util.HttpCallbackListener;
 import com.example.coolweather.util.HttpUtil;
+import com.example.coolweather.util.LogUtil;
 import com.example.coolweather.util.Utility;
 
 public class WeatherActivity extends Activity implements OnClickListener
@@ -153,6 +156,8 @@ public class WeatherActivity extends Activity implements OnClickListener
 
 		weatherInfoLayout.setVisibility(View.VISIBLE);
 		cityNameText.setVisibility(View.VISIBLE);
+		Intent intent=new Intent(this, AutoUpdateService.class);
+		startService(intent);
 	}
 
 	@Override
@@ -168,11 +173,13 @@ public class WeatherActivity extends Activity implements OnClickListener
 			break;
 		case R.id.refresh_weather:
 			publishText.setText("同步中,请稍等");
+			
 			SharedPreferences spf=PreferenceManager.getDefaultSharedPreferences(this);
 			String weatherCode=spf.getString("weather_code", "");
-			if (TextUtils.isEmpty(weatherCode))
+			LogUtil.d("WeatherActivity", weatherCode);
+			if (!TextUtils.isEmpty(weatherCode))
 			{
-				queryWeatherCode(weatherCode);
+				queryWeatherInfo(weatherCode);
 			}
 			break;
 		default:
