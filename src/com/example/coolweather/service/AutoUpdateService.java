@@ -9,7 +9,6 @@ import com.example.coolweather.util.Utility;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
@@ -41,12 +40,12 @@ public class AutoUpdateService extends Service
 				updateWeather();
 			}
 		}).start();
-		AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		 long time = 8 * 60 * 60 * 1000;
-		long triggerTime = time + SystemClock.currentThreadTimeMillis();
+		AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
+		long time = 8 * 60 * 60 * 1000;
+		long triggerTime = time + SystemClock.elapsedRealtime();
 		Intent i = new Intent(this, AntoUpdateRecevier.class);
 		PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
-		manager.set(AlarmManager.RTC_WAKEUP, triggerTime, pi);
+		manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerTime, pi);
 		return super.onStartCommand(intent, flags, startId);
 	}
 
